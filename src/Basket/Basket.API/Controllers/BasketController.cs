@@ -26,8 +26,12 @@ namespace Basket.API.Controllers
         public async Task<ActionResult<BasketCart>> GetBasketAsync(string userName)
         {
             var basket = await _repository.GetBasket(userName);
+
+            //if user first acces, should see an empty basket.
+            BasketCart response = basket ?? new BasketCart(userName);
+            
             //cover response with Http Verbs
-            return Ok(basket);
+            return base.Ok(response);
         }
 
         [HttpPost]
