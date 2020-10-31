@@ -1,8 +1,11 @@
 version: '3.4'
 
 services:
-  basket.api:
-    image: ${DOCKER_REGISTRY-}basketapi
-    build:
-      context: .
-      dockerfile: src/Basket/Basket.API/Dockerfile
+    basketdb:
+        image: redis #Redis offical image name is redis
+
+    basket.api:
+        image: ${DOCKER_REGISTRY-}basketapi
+        build:
+            context: .
+            dockerfile: src/Basket/Basket.API/Dockerfile

@@ -1,8 +1,24 @@
 version: '3.4'
 
 services:
-  basket.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
+    basketdb:
+        container_name: basketdb
+        restart: always
+        #no need volume, cos Redis store data in memory
+        #volumes:
+        #   - ${WEBAPP_STORAGE_HOME}/site:/data/db
+        ports:
+            - "6379:6379" #Redis officially exposing on that port
+
+    basket.api:
+        container_name: basketapi
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - "ConnectionStrings:Redis=basketdb:6379" #should match the container name include Redis
+        depends_on:
+            - basketdb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https/
+        ports:
+            - "8001:80"
