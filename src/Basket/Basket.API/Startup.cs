@@ -1,7 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Basket.API.Controllers;
+using Basket.API.Data;
+using Basket.API.Data.Interfaces;
+using Basket.API.Repositories;
+using Basket.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,10 +34,13 @@ namespace Basket.API
             //create ConnectionMultiplexer object given parameters
             services.AddSingleton<ConnectionMultiplexer>(sp =>
             {
-                var configuraitonParameter = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
-                return ConnectionMultiplexer.Connect(configuraitonParameter);
+                var configuraitonParameters = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuraitonParameters);
             });
-            
+
+            services.AddTransient<IBasketContext, BasketContext>();
+            services.AddTransient<IBasketRepository, BasketRepository>();
+
             services.AddControllers();
         }
 
